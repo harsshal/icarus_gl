@@ -1,1 +1,45 @@
+# region imports
+from AlgorithmImports import *
+# endregion
 
+class AdaptableOrangeZebra(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 2, 4)
+        self.set_end_date(2024, 2, 4)
+        self.set_cash(100000)
+
+        self.month = 0
+        self.num_coarse = 500
+
+        self.universe_settings.resolution = resolution.DAILY
+        self.add_universe(self.coarse_selection_function, self.fine_selection_function)
+    
+    def Is_Rebalance_Due(self, time):
+        if time.month == self.month or time.month not in [1, 4, 7, 10]:
+            return None
+        self.time = time.month
+        return time        # it's time to rebalance
+
+    def Coarse_Selection_Function(self, coarse):
+        if not self.Is_Rebalance_Due(self.time):
+            return Universe.unchanged
+        selected = sorted ([x for x in coarse if x.HasFundamentalData and x.Price > 5],
+                            key = lambda x: x.DollarVolume, reverse = True)
+        return [x.Symbol for x in selected [:self.num_coarse] ]
+
+    def Fine_Selection_Function(self, fine):
+        sectors = [
+            MorningstarSectorCode.financial_services,
+            MorningstarSectorCode.real_estate,
+            MorningstarSectorCode.healthcare,
+            MorningstarSectorCode.utilities,
+            MorningstarSectorCode.Technology
+        ]
+
+        filtered_fine = [x.Symbol for x in fine
+                            if x.security_refrence.IPO_Date + time_delta(5*365) < self.time 
+                            and x.asset_classification.MorningstarSectorCode in sectors
+                            and x.operation_ratios.ROE.value > 0
+                            and x.valuation_ratios.PERatios >0 
+                            ]
