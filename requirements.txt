@@ -1,3 +1,5 @@
+# pip install -r /path/to/requirements.txt
+
 # sudo apt install python3-venv
 # python3 -m venv ~/.venv/ibkr_python
 # pip install git+https://github.com/kernc/backtesting.py.git
