@@ -11,6 +11,9 @@ class IBScanner(IBBase):
         self.data = []
         self.scancode = scancode
         self.tagvalues = tagvalues
+    
+    def nextValidId(self, orderId):
+        self.start()
 
     def start(self):
         scan_sub = ScannerSubscription()
@@ -53,13 +56,13 @@ def main():
     scancode = "TOP_VOLUME_RATE"
 
     tagvalues = [
-        TagValue("priceAbove", "1"),         # Price above $1
-        TagValue("priceBelow", "20"),        # Price below $20
-        TagValue("percentChangeAbove", "10"),  # Up at least 10%
-        TagValue("relVolumeAbove", "5"),     # Relative volume 5x normal
-        TagValue("marketCapBelow", "20000000"),  # Market cap below 20 million shares
-        TagValue("scannerSettingPairs", "news"),  # Breaking news
-        TagValue("changeAbove", "0")         # To capture momentum (moving quickly)
+        # TagValue("priceAbove", "1"),         # Price above $1
+        # TagValue("priceBelow", "20"),        # Price below $20
+        # TagValue("percentChangeAbove", "10"),  # Up at least 10%
+        # TagValue("relVolumeAbove", "5"),     # Relative volume 5x normal
+        # TagValue("marketCapBelow", "20000000"),  # Market cap below 20 million shares
+        # TagValue("scannerSettingPairs", "news"),  # Breaking news
+        # TagValue("changeAbove", "0")         # To capture momentum (moving quickly)
     ]
     
     df = get_ibkr_scanner(scancode, tagvalues)
