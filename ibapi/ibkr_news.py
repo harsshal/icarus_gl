@@ -63,6 +63,8 @@ def get_ibkr_news(ticker):
 
 # Example usage if run standalone
 if __name__ == "__main__":
+    
+    #TODO : need to get all the tickers which have top news
     ticker = "SPX"
     has_news = get_ibkr_news(ticker)
     print(f"Breaking news detected for {ticker}: {has_news}")
