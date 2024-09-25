@@ -1,8 +1,9 @@
 from ibapi.order import Order
-from ibkr_base import IBOrderBase
+from ibkr_base import IBBase
+from time import sleep
 
 
-class IBOrder(IBOrderBase):
+class IBOrder(IBBase):
     def __init__(self, ticker, action, order_type, lmt_price, total_quantity):
         super().__init__()
         self.ticker = ticker

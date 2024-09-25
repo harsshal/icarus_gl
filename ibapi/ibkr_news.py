@@ -1,6 +1,8 @@
 from ibapi.contract import Contract
-from ibbase import IBBase  # Import the IBBase module
+from ibkr_base import IBBase  # Import the IBBase module
 from datetime import datetime
+import threading
+import time
 
 
 class IBApiNews(IBBase):
@@ -11,34 +13,31 @@ class IBApiNews(IBBase):
         self.news_data = []
         self.news_flag = False
 
-    def nextValidId(self, orderId: int):
-        # Request news data as soon as the connection is valid
-        self.request_news_data()
-
-    def request_news_data(self):
+    def start(self):
         # Create a contract for the news subscription
         contract = Contract()
-        contract.symbol = f"{self.ticker}:BRFG_ALL"  # Assuming 'BRFG' is the news provider for IB
-        contract.secType = "NEWS"
-        contract.exchange = "BRFG"
+        contract.symbol = self.ticker  # Only use the ticker
+        contract.secType = "STK"       # Stock security type for the ticker
+        contract.exchange = "SMART"    # Exchange
+        contract.currency = "USD"      # Currency
 
-        # Request live market data for news (news data is requested via market data for news contracts)
-        self.reqMktData(1001, contract, "mdoff,292", False, False, [])
+        # Request live news bulletins, set allMsgs to True to receive all news types
+        self.reqNewsBulletins(allMsgs=True)
 
-    # Handle live news headlines
-    def tickNews(self, tickerId: int, timeStamp: int, providerCode: str, articleId: str, headline: str, extraData: str):
-        news_time = datetime.utcfromtimestamp(timeStamp)
+    # Handle news bulletins
+    def newsBulletins(self, msgId: int, newsType: int, newsMsg: str, originExch: str):
+        news_time = datetime.utcnow()  # Get the current UTC time
 
-        # Store the news if it's breaking (for now, assume any news is important)
+        # Store the news if it's breaking or important
         news_entry = {
             'time': news_time,
-            'headline': headline,
-            'provider': providerCode,
-            'articleId': articleId,
+            'message': newsMsg,
+            'exchange': originExch,
+            'type': newsType,
         }
         self.news_data.append(news_entry)
         self.news_flag = True
-        print(f"Breaking news for {self.ticker}: {headline}")
+        print(f"Breaking news for {self.ticker}: {newsMsg}")
 
     def has_recent_news(self):
         # Check if any breaking news has been detected
@@ -49,8 +48,14 @@ class IBApiNews(IBBase):
 def get_ibkr_news(ticker):
     app = IBApiNews(ticker)
 
-    # Use the run_client method from IBBase to connect and run the event loop
-    app.run_client()
+    # Start the API client
+    threading.Thread(target=app.run_client).start()
+
+    # Sleep for 5 seconds before terminating the client
+    time.sleep(5)
+
+    # Stop the client after 5 seconds
+    app.disconnect_client()
 
     # Check if there's recent breaking news
     return app.has_recent_news()
@@ -58,6 +63,6 @@ def get_ibkr_news(ticker):
 
 # Example usage if run standalone
 if __name__ == "__main__":
-    ticker = "AAPL"
+    ticker = "SPX"
     has_news = get_ibkr_news(ticker)
     print(f"Breaking news detected for {ticker}: {has_news}")

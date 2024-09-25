@@ -7,6 +7,14 @@ from time import sleep
 class IBBase(EWrapper, EClient):
     def __init__(self):
         EClient.__init__(self, self)
+        self.nextOrderId = None
+    
+    def nextValidId(self, orderId):
+        self.nextOrderId = orderId
+        self.start()
+
+    def start(self):
+        raise NotImplementedError("This method should be overridden by subclasses.")
     
     def create_contract(self, symbol, sec_type="STK", exchange="SMART", currency="USD"):
         contract = Contract()
@@ -25,16 +33,3 @@ class IBBase(EWrapper, EClient):
 
     def disconnect_client(self):
         self.disconnect()
-
-
-class IBOrderBase(IBBase):
-    def __init__(self):
-        super().__init__()
-        self.nextOrderId = None
-
-    def nextValidId(self, orderId):
-        self.nextOrderId = orderId
-        self.start()
-
-    def start(self):
-        raise NotImplementedError("This method should be overridden by subclasses.")

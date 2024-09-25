@@ -11,9 +11,6 @@ class IBScanner(IBBase):
         self.data = []
         self.scancode = scancode
         self.tagvalues = tagvalues
-    
-    def nextValidId(self, orderId):
-        self.start()
 
     def start(self):
         scan_sub = ScannerSubscription()
