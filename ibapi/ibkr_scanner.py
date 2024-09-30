@@ -16,7 +16,7 @@ class IBScanner(IBBase):
         scan_sub = ScannerSubscription()
         scan_sub.instrument = "STK"
         scan_sub.locationCode = "STK.US.MAJOR"
-        scan_sub.scanCode = self.scancode  # More relevant for volume and momentum
+        scan_sub.scanCode = self.scancode
 
         self.reqScannerSubscription(7001, scan_sub, [], self.tagvalues)
         sleep(1)
@@ -51,6 +51,7 @@ def get_ibkr_scanner(scancode, tagvalues):
 def main():
     # Adding the required filters
     scancode = "TOP_VOLUME_RATE"
+    scancode = "HOT_BY_VOLUME"
 
     tagvalues = [
         # TagValue("priceAbove", "1"),         # Price above $1
