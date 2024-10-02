@@ -52,6 +52,8 @@ def main():
     # Adding the required filters
     scancode = "TOP_VOLUME_RATE"
     scancode = "HOT_BY_VOLUME"
+    scancode = "TOP_PERC_GAIN"
+    scancode = "TOP_PERC_LOSE"
 
     tagvalues = [
         # TagValue("priceAbove", "1"),         # Price above $1

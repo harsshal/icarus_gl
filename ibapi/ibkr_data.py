@@ -1,14 +1,16 @@
+# https://ibkrcampus.com/campus/ibkr-api-page/twsapi-doc/#hist-duration
+
 import pandas as pd
 from ibkr_base import IBBase
 
 
 class IBHistoricalData(IBBase):
-    def __init__(self, ticker, end_date, history_period, bar_size):
+    def __init__(self, ticker, endDateTime, durationStr, barSizeSetting):
         super().__init__()
         self.ticker = ticker
-        self.end_date = end_date
-        self.history_period = history_period
-        self.bar_size = bar_size
+        self.endDateTime = endDateTime
+        self.durationStr = durationStr
+        self.barSizeSetting = barSizeSetting
         self.data = []
 
     def nextValidId(self, orderId):
@@ -16,8 +18,19 @@ class IBHistoricalData(IBBase):
 
     def request_historical_data(self):
         contract = self.create_contract(self.ticker)
-        self.reqHistoricalData(1, contract, self.end_date, self.history_period,
-                               self.bar_size, 'TRADES', 1, 1, False, [])
+        #self.reqHistoricalData(1, contract, self.endDateTime, self.durationStr,
+        #                       self.bar_size, 'TRADES', 1, 1, False, [])
+        
+        self.reqHistoricalData(reqId=101, 
+                          contract=contract,
+                          endDateTime=self.endDateTime, 
+                          durationStr=self.durationStr,
+                          barSizeSetting=self.barSizeSetting,
+                          whatToShow='Trades',
+                          useRTH=0,                 #0 = Includes data outside of RTH | 1 = RTH data only 
+                          formatDate=1,    
+                          keepUpToDate=0,           #0 = False | 1 = True 
+                          chartOptions=[])
 
     def historicalData(self, reqId, bar):
         self.data.append(bar)
@@ -37,14 +50,16 @@ class IBHistoricalData(IBBase):
         return getattr(self, 'df', pd.DataFrame())
 
 
-def get_ibkr_data(ticker, end_date, history_period, bar_size):
-    app = IBHistoricalData(ticker, end_date, history_period, bar_size)
+def get_ibkr_data(ticker, endDateTime='', 
+                          durationStr='1 D',
+                          barSizeSetting='1 hour',):
+    app = IBHistoricalData(ticker, endDateTime, durationStr, barSizeSetting)
     app.run_client()
     return app.get_df()
 
 
 def main():
-    df = get_ibkr_data('AAPL', '20240631 00:00:00', '1 D', '1 min')
+    df = get_ibkr_data('AAPL', '20240931 00:00:00 US/Eastern', '1 D', '1 min')
     print(df.tail(10))
 
 
