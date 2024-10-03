@@ -14,5 +14,6 @@ table_name = 'sp500_tickers'
 # Call the save function to save the DataFrame to MySQL
 save_dataframe_to_mysql(df, db_url, table_name)
 
+
 # Print the last few rows of the DataFrame for confirmation
-print(df.tail(10))
+#print(df.tail(10))
