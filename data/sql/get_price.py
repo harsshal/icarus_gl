@@ -6,6 +6,8 @@ import pandas as pd
 from datetime import datetime
 import time
 from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os
 
 
 class IBApi(EWrapper, EClient):
@@ -29,7 +31,7 @@ class IBApi(EWrapper, EClient):
         self.reqId_counter += 1  # Increment request ID for next request
 
         # Wait for IBKR API to fetch the price
-        time.sleep(5)
+        time.sleep(1)
         self.cancelMktData(reqId)  # Stop receiving market data
         
         # Return the fetched price or None if not found
@@ -114,7 +116,9 @@ def get_tickers_from_sql(db_url, table_name):
 
 def main():
     # Specify the MySQL database connection URL and table name
-    db_url = 'mysql+pymysql://icarus-user:gl_icarus@localhost/interactive_data'
+    load_dotenv()
+
+    db_url = os.getenv('db_url')
     table_name = 'sp500_tickers'
 
    

@@ -1,6 +1,8 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import pymysql
+from dotenv import load_dotenv
+import os
 
 def save_dataframe_to_mysql(df, db_url, table_name, if_exists='replace', index=True):
     """

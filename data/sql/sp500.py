@@ -1,5 +1,7 @@
 import yfinance as yf
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
 def get_sp500_tickers():
     """

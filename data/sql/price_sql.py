@@ -1,5 +1,7 @@
 from sqlalchemy import create_engine
 from get_price import *
+from dotenv import load_dotenv
+import os
 
 def save_dataframe_to_sql(df, db_url, table_name):
     """
@@ -22,7 +24,9 @@ def save_dataframe_to_sql(df, db_url, table_name):
 
 def main():
     # Specify the MySQL database connection URL and table name
-    db_url = 'mysql+pymysql://icarus-user:gl_icarus@localhost/interactive_data'
+    load_dotenv()
+
+    db_url = os.getenv('db_url')
     table_name = 'sp500_tickers'
 
     # Fetch tickers from SQL table
