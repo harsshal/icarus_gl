@@ -16,12 +16,13 @@ class IBBase(EWrapper, EClient):
     def start(self):
         raise NotImplementedError("This method should be overridden by subclasses.")
     
-    def create_contract(self, symbol, sec_type="STK", exchange="SMART", currency="USD"):
+    def create_contract(self, symbol, primaryExchange="SMART", sec_type="STK", exchange="SMART", currency="USD"):
         contract = Contract()
         contract.symbol = symbol
         contract.secType = sec_type
         contract.exchange = exchange
         contract.currency = currency
+        contract.primaryExchange = primaryExchange
         return contract
 
     def connect_client(self):

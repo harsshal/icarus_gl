@@ -1,10 +1,9 @@
 # sudo apt install python3-venv
 # python3 -m venv ~/.venv/ibkr_python
-# ~/.venv/ibkr_python/bin/pip install git+https://github.com/kernc/backtesting.py.git
-
 # ~/.venv/ibkr_python/bin/pip install -r /path/to/requirements.txt
 
 ibapi
+# ~/.venv/ibkr_python/bin/pip install git+https://github.com/kernc/backtesting.py.git
 pandas
 pandas_ta
 matplotlib
@@ -13,9 +12,4 @@ setuptools
 nltk
 # python -m nltk.downloader vader_lexicon
 
-
-# ibapi==9.81.1.post1
-# pandas==2.2.2
-# matplotlib==3.9.1
-# scikit-learn==1.5.1
-# pandas_ta==0.3.14b0
+export PYTHONPATH=$(pwd)/ibapi
