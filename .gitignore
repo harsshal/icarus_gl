@@ -2,3 +2,4 @@
 *.html
 *.vscode*
 .env
+.conda*
