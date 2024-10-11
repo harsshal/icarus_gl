@@ -1,4 +1,4 @@
-import strats.utils as utils
+import utils
 from ibkr_data import get_ibkr_data
 from ibkr_order import IBOrder
 

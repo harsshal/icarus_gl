@@ -1,6 +1,8 @@
 from ibkr_scanner import get_ibkr_scanner
 from ibkr_data import get_ibkr_data
 from ibapi.tag_value import TagValue
+from time import sleep
+import utils
 
 
 def main():
@@ -13,7 +15,7 @@ def main():
         # TagValue("marketCapBelow", "20000000"),  # Market cap below 20 million shares
         # TagValue("scannerSettingPairs", "news"),  # Breaking news
         # TagValue("changeAbove", "0")         # To capture momentum (moving quickly)
-        TagValue("tradeRateAbove", "1"),         # Price above $1
+        TagValue("tradeRateAbove", "100"),       # trades per min
     ]
 
     df_scanner = get_ibkr_scanner("TOP_PERC_GAIN", tagvalues)
@@ -27,8 +29,11 @@ def main():
         ticker = row['contract']
         print(f"Running strategy for {ticker}")
         # Apply the strategy to each stock
-        ticker_data = get_ibkr_data(ticker, '', '2000 S', '1 secs')
+        ticker_data = get_ibkr_data(ticker, '', '100 S', '1 secs')
         print(ticker_data)
+        if len(ticker_data) > 0:
+            mometum_price = utils.momentum_price(ticker_data[:-10]['Close'])
+            print(mometum_price)
         sleep(1)
 
 
