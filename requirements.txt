@@ -12,4 +12,4 @@ setuptools
 nltk
 # python -m nltk.downloader vader_lexicon
 
-export PYTHONPATH=$(pwd)/ibapi
+#export PYTHONPATH=$(pwd)/ibapi

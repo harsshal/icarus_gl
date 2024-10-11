@@ -3,8 +3,8 @@ from ibapi.wrapper import EWrapper
 from ibapi.contract import Contract
 from threading import Thread
 import pandas as pd
-from sqlalchemy import create_engine
-from dotenv import load_dotenv
+#from sqlalchemy import create_engine
+#from dotenv import load_dotenv
 import os
 import sys
 import time
@@ -12,9 +12,7 @@ import time
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backtesting.py'))
 sys.path.insert(0, parent_dir)
 
-from ibkr_data import get_ibkr_data
-
-
+from ibapi import ibkr_data
 
 def get_tickers_from_sql(db_url, table_name):
     """
@@ -92,8 +90,8 @@ def main():
     # historical_data_df.to_csv('historical_data.csv', index=False)
 
     # Or save to SQL table:
-    engine = create_engine(db_url)
-    historical_data_df.to_sql('historical_data_sp500', con=engine, if_exists='replace', index=False)
+    # engine = create_engine(db_url)
+    # historical_data_df.to_sql('historical_data_sp500', con=engine, if_exists='replace', index=False)
 
 
 if __name__ == "__main__":
