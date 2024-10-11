@@ -1,61 +1,52 @@
-import numpy as np
 import pandas as pd
 from backtesting import Strategy, Backtest
-from backtesting.test import SMA
-
-import sys
-import os
-
-def add_to_sys_path(path_str):
-    parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), path_str))
-    sys.path.insert(0, parent_dir)
-
-add_to_sys_path('../ibapi')
-
 from ibkr_data import get_ibkr_data
 
-def rsi(close_prices, period=14):
-    """Calculate RSI using NumPy arrays to ensure compatibility with the backtesting framework."""
-    close_diff = np.diff(close_prices)  
-    gain = np.where(close_diff > 0, close_diff, 0)
-    loss = np.where(close_diff < 0, -close_diff, 0)
-
-    avg_gain = np.zeros_like(close_prices)
-    avg_loss = np.zeros_like(close_prices)
-
-    avg_gain[period] = np.mean(gain[:period])
-    avg_loss[period] = np.mean(loss[:period])
-
-    for i in range(period + 1, len(close_prices)):
-        avg_gain[i] = (avg_gain[i-1] * (period - 1) + gain[i-1]) / period
-        avg_loss[i] = (avg_loss[i-1] * (period - 1) + loss[i-1]) / period
-
+def RSI(series, period):
+    delta = series.diff()
+    gain = (delta.where(delta > 0, 0)).fillna(0)
+    loss = (-delta.where(delta < 0, 0)).fillna(0)
+    avg_gain = gain.rolling(window=period, min_periods=period).mean()
+    avg_loss = loss.rolling(window=period, min_periods=period).mean()
     rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
-
-    rsi[:period] = 50  
     return rsi
 
-class RSI_Strategy(Strategy):
+class RSIStrategy(Strategy):
     rsi_period = 14
     overbought = 70
     oversold = 30
+    trade_count = 0
 
     def init(self):
-        """Initialize RSI indicator"""
-        self.rsi = self.I(rsi, self.data.Close, self.rsi_period)
+        self.rsi = self.I(RSI, self.data.Close, self.rsi_period)
 
     def next(self):
-        """Define entry/exit logic based on RSI"""
-        if self.rsi[-1] < self.oversold:
+        if self.trade_count >= 5:
+            return
+
+        if self.rsi[-1] < self.oversold and not self.position:
             self.buy()
+            self.trade_count += 1
+            print(f"Buy at {self.data.Close[-1]} on {self.data.index[-1]}")
 
-        elif self.rsi[-1] > self.overbought:
-            self.sell()
+        elif self.rsi[-1] > self.overbought and self.position:
+            self.position.close()
+            self.trade_count += 1
+            print(f"Sell at {self.data.Close[-1]} on {self.data.index[-1]}")
 
-aapl = get_ibkr_data('AAPL', '', '1 D', '1 min')
+aapl = get_ibkr_data(
+    ticker='AAPL',
+    end_date='20240631 00:00:00 US/Eastern',
+    history_period='10 D',
+    bar_size='1 min'
+)
 
-bt = Backtest(aapl, RSI_Strategy, cash=10000, commission=0.0001)
-print(bt.run())
-bt.plot()
+if aapl.empty:
+    print("No data received for ticker: AAPL")
+else:
+    bt = Backtest(aapl, RSIStrategy, cash=10000, commission=0.0001)
+    stats = bt.run()
+    print(stats)
+    bt.plot()
 
