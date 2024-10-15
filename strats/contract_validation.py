@@ -1,6 +1,6 @@
 # https://ibkrcampus.com/campus/ibkr-api-page/twsapi-doc/#request-contract-details
 from time import sleep
-import hputils
+import strats.utils as utils
 
 from ibkr_base import IBBase
 
