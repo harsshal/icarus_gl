@@ -3,16 +3,12 @@ from save_sql import save_dataframe_to_mysql
 from dotenv import load_dotenv
 import sys
 import os
-
-
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backtesting.py'))
-sys.path.insert(0, parent_dir)
-
+import hputils
 from ibkr_data import get_ibkr_data
 
 
 # Fetch historical data using the function from ibkr_data.py
-df = get_ibkr_data('AAPL', '20241008 00:00:00', '1 D', '5 min')
+df = get_ibkr_data('AAPL', '20241008 00:00:00', '1 D', '5 mins')
 
 # Specify the MySQL database connection URL
 load_dotenv()
@@ -26,4 +22,5 @@ table_name = 'historical_data'
 save_dataframe_to_mysql(df, db_url, table_name)
 
 # Print the last few rows of the DataFrame for confirmation
-print(df.tail(10))
+print(df)
+print(df.columns)

@@ -59,7 +59,8 @@ def get_ibkr_data(ticker,endDateTime='',
     app.run_client()
     if len(app.data) == 0:
         print("No data received for ticker: " + ticker)
-        exit()
+        return pd.DataFrame()
+        #exit()
     return app.data
 
 

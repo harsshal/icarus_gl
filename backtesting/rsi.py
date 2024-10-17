@@ -35,18 +35,15 @@ class RSIStrategy(Strategy):
             self.trade_count += 1
             print(f"Sell at {self.data.Close[-1]} on {self.data.index[-1]}")
 
-aapl = get_ibkr_data(
-    ticker='AAPL',
-    end_date='20240631 00:00:00 US/Eastern',
-    history_period='10 D',
-    bar_size='1 min'
+data = get_ibkr_data(
+    ticker='F',
+    endDateTime='20241016 00:00:00 US/Eastern',
+    durationStr='1 D',
+    barSizeSetting='1 min'
 )
 
-if aapl.empty:
-    print("No data received for ticker: AAPL")
-else:
-    bt = Backtest(aapl, RSIStrategy, cash=10000, commission=0.0001)
+if not data.empty:
+    bt = Backtest(data, RSIStrategy, cash=10000, commission=0.0001)
     stats = bt.run()
     print(stats)
     bt.plot()
-
