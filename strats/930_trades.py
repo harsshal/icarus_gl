@@ -4,7 +4,7 @@ from ibkr_order import IBOrderManager
 from ibkr_scanner import get_ibkr_scanner
 
 def trading_strategy(ticker, end_date, history_period, bar_size):
-    # Fetch 5-minute historical data
+    # Fetch historical data
     df = get_ibkr_data(ticker, end_date, history_period, bar_size)
 
     # Ensure we have data
