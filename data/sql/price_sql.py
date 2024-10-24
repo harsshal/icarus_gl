@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from get_price import *
 from dotenv import load_dotenv
 import os
-import hputils
+
 
 def save_dataframe_to_sql(df, db_url, table_name):
     """
