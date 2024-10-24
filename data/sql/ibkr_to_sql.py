@@ -3,7 +3,6 @@ from save_sql import save_dataframe_to_mysql
 from dotenv import load_dotenv
 import sys
 import os
-import hputils
 from ibkr_data import get_ibkr_data
 
 

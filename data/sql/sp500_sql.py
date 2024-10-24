@@ -13,7 +13,7 @@ load_dotenv()
 
 db_url = os.getenv('db_url')
 # Specify the table name where the DataFrame should be saved
-table_name = 'sp500_tickers'
+table_name = 'instruments'
 
 # Call the save function to save the DataFrame to MySQL
 save_dataframe_to_mysql(df, db_url, table_name)
